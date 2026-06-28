@@ -98,7 +98,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> Equals()
     {
-        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
+        var compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
@@ -114,7 +114,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> Contains()
     {
-        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
+        var compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
@@ -130,7 +130,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> StartsWith()
     {
-        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
+        var compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
@@ -145,7 +145,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> GreaterThanOrEqual()
     {
-        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
+        var compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
@@ -160,7 +160,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> LessThanOrEqual()
     {
-        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
+        var compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
