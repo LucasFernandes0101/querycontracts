@@ -185,7 +185,9 @@ It demonstrates the library with an in-memory product list and a `GET /products`
 
 ## Contributing
 
-Open an issue or pull request at [github.com/LucasFernandes0101/querycontracts](https://github.com/LucasFernandes0101/querycontracts).
+We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to open issues, submit pull requests and run the project locally.
+
+This project adheres to the [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
 ## License
 
