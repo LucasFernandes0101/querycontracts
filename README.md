@@ -1,5 +1,7 @@
 # QueryContracts
 
+[![NuGet](https://img.shields.io/nuget/v/QueryContracts.svg)](https://www.nuget.org/packages/QueryContracts/)
+
 Define public query contracts for .NET APIs.
 
 QueryContracts maps an application input object to `IQueryable<T>` using an explicit, type-safe contract.
@@ -35,10 +37,8 @@ public static readonly QueryContract<User, UserQuery> Contract =
 
 ## Installation
 
-> This package is an early preview.
-
 ```bash
-dotnet add package QueryContracts --version 0.1.0-preview.5
+dotnet add package QueryContracts
 ```
 
 ## Quickstart
@@ -171,17 +171,21 @@ It demonstrates the library with an in-memory product list and a `GET /products`
 
 ## Roadmap
 
-**v0.1 (current preview):**
+**v0.1.0 (released):**
 - Filters (Equals, Contains, StartsWith, GreaterThanOrEqual, LessThanOrEqual)
 - Sorting with aliases and defaults
 - Pagination with maximum page size validation
 - Structured validation errors
 - Sample API
 
-**Later:**
-- More examples
+**Future:**
+- More examples and integration guides
 - Optional ASP.NET Core helpers
-- Better docs
+- More filter operators
+
+## Contributing
+
+Open an issue or pull request at [github.com/LucasFernandes0101/querycontracts](https://github.com/LucasFernandes0101/querycontracts).
 
 ## License
 
