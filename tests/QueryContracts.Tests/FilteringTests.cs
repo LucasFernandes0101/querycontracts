@@ -299,4 +299,34 @@ public class FilteringTests
         Assert.Single(items);
         Assert.Equal("Mechanical Keyboard", items[0].Name);
     }
+
+    [Fact]
+    public void Contains_Throws_When_Entity_Property_Is_Not_String()
+    {
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+        {
+            QueryContract.For<Product, ProductQuery>()
+                .Filter(q => q.MinPrice, p => p.Price)
+                .Contains()
+                .Build();
+        });
+
+        Assert.Contains("Contains", exception.Message);
+        Assert.Contains("string", exception.Message);
+    }
+
+    [Fact]
+    public void StartsWith_Throws_When_Entity_Property_Is_Not_String()
+    {
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+        {
+            QueryContract.For<Product, ProductQuery>()
+                .Filter(q => q.MinPrice, p => p.Price)
+                .StartsWith()
+                .Build();
+        });
+
+        Assert.Contains("StartsWith", exception.Message);
+        Assert.Contains("string", exception.Message);
+    }
 }

@@ -9,6 +9,30 @@ namespace QueryContracts.Internal;
 internal static class ExpressionHelpers
 {
     /// <summary>
+    /// Extracts the member name from a simple property access expression.
+    /// </summary>
+    public static string GetMemberName<TInput, TProperty>(
+        Expression<Func<TInput, TProperty>> selector)
+    {
+        var body = selector.Body;
+
+        if (body is UnaryExpression unary &&
+            unary.Operand is MemberExpression operandMember)
+        {
+            body = operandMember;
+        }
+
+        if (body is not MemberExpression memberExpression)
+        {
+            throw new ArgumentException(
+                "Selector must be a simple member access expression.",
+                nameof(selector));
+        }
+
+        return memberExpression.Member.Name;
+    }
+
+    /// <summary>
     /// Applies an OrderBy or OrderByDescending operation
     /// using a non-typed <see cref="LambdaExpression"/>.
     /// </summary>
@@ -33,7 +57,7 @@ internal static class ExpressionHelpers
             }
         }
 
-        MethodInfo method = (targetMethod ?? throw new MissingMethodException(
+        var method = (targetMethod ?? throw new MissingMethodException(
             nameof(Queryable),
             methodName))
             .MakeGenericMethod(typeof(TEntity), propertyType);

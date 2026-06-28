@@ -37,7 +37,13 @@ public sealed class QueryContractBuilder<TEntity, TInput>
     /// <param name="sortSelector">An expression that reads the sort string from the input.</param>
     /// <returns>A <see cref="SortBuilder{TEntity, TInput}"/> for declaring sort aliases.</returns>
     public SortBuilder<TEntity, TInput> Sort(Expression<Func<TInput, string?>> sortSelector)
-        => new(this, sortSelector);
+    {
+        var sortMemberName = ExpressionHelpers.GetMemberName(sortSelector);
+        return new SortBuilder<TEntity, TInput>(
+            this,
+            sortSelector,
+            sortMemberName);
+    }
 
     /// <summary>
     /// Configures pagination rules for the contract.
@@ -51,10 +57,15 @@ public sealed class QueryContractBuilder<TEntity, TInput>
         Expression<Func<TInput, int?>> pageSizeSelector,
         int maxSize)
     {
-        _page = new(
+        var pageMemberName = ExpressionHelpers.GetMemberName(pageSelector);
+        var pageSizeMemberName = ExpressionHelpers.GetMemberName(pageSizeSelector);
+
+        _page = new PageRule<TInput>(
             pageSelector.Compile(),
             pageSizeSelector.Compile(),
-            maxSize);
+            maxSize,
+            pageMemberName,
+            pageSizeMemberName);
 
         return this;
     }
@@ -112,8 +123,13 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <c>Contains</c>.
     /// </summary>
     /// <returns>The parent builder for chaining.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// The entity property is not a <see cref="string"/>.
+    /// </exception>
     public QueryContractBuilder<TEntity, TInput> Contains()
     {
+        EnsureStringEntityProperty(nameof(Contains));
+
         var compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
@@ -128,14 +144,28 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <c>StartsWith</c>.
     /// </summary>
     /// <returns>The parent builder for chaining.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// The entity property is not a <see cref="string"/>.
+    /// </exception>
     public QueryContractBuilder<TEntity, TInput> StartsWith()
     {
+        EnsureStringEntityProperty(nameof(StartsWith));
+
         var compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
             FilterKind.StartsWith));
         return _builder;
+    }
+
+    private void EnsureStringEntityProperty(string methodName)
+    {
+        if (typeof(TEntityProperty) != typeof(string))
+        {
+            throw new InvalidOperationException(
+                $"{methodName} can only be used with string entity properties.");
+        }
     }
 
     /// <summary>
@@ -177,15 +207,18 @@ public sealed class SortBuilder<TEntity, TInput>
 {
     private readonly QueryContractBuilder<TEntity, TInput> _builder;
     private readonly Func<TInput, string?> _sortAccessor;
+    private readonly string _sortMemberName;
     private readonly Dictionary<string, SortAlias<TEntity>> _aliases = [];
     private (string Alias, bool Descending)? _default;
 
     internal SortBuilder(
         QueryContractBuilder<TEntity, TInput> builder,
-        Expression<Func<TInput, string?>> sortSelector)
+        Expression<Func<TInput, string?>> sortSelector,
+        string sortMemberName)
     {
         _builder = builder;
         _sortAccessor = sortSelector.Compile();
+        _sortMemberName = sortMemberName;
     }
 
     /// <summary>
@@ -212,7 +245,13 @@ public sealed class SortBuilder<TEntity, TInput>
     public QueryContractBuilder<TEntity, TInput> Default(string alias, bool descending = false)
     {
         _default = (alias, descending);
-        _builder.SetSort(new(_sortAccessor, _aliases, _default));
+
+        _builder.SetSort(new SortRule<TEntity, TInput>(
+            _sortAccessor,
+            _aliases,
+            _default,
+            _sortMemberName));
+
         return _builder;
     }
 
@@ -228,7 +267,12 @@ public sealed class SortBuilder<TEntity, TInput>
         Expression<Func<TInput, int?>> pageSizeSelector,
         int maxSize)
     {
-        _builder.SetSort(new(_sortAccessor, _aliases, _default));
+        _builder.SetSort(new SortRule<TEntity, TInput>(
+            _sortAccessor,
+            _aliases,
+            _default,
+            _sortMemberName));
+
         return _builder.Page(pageSelector, pageSizeSelector, maxSize);
     }
 
@@ -238,7 +282,12 @@ public sealed class SortBuilder<TEntity, TInput>
     /// <returns>A new, immutable contract instance.</returns>
     public QueryContract<TEntity, TInput> Build()
     {
-        _builder.SetSort(new(_sortAccessor, _aliases, _default));
+        _builder.SetSort(new SortRule<TEntity, TInput>(
+            _sortAccessor,
+            _aliases,
+            _default,
+            _sortMemberName));
+
         return _builder.Build();
     }
 }

@@ -46,16 +46,19 @@ internal sealed class SortRule<TEntity, TInput>
     private readonly Func<TInput, string?> _sortAccessor;
     private readonly ReadOnlyDictionary<string, SortAlias<TEntity>> _aliases;
     private readonly (string Alias, bool Descending)? _default;
+    private readonly string _sortMemberName;
 
     internal SortRule(
         Func<TInput, string?> sortAccessor,
         IDictionary<string, SortAlias<TEntity>> aliases,
-        (string Alias, bool Descending)? defaultSort)
+        (string Alias, bool Descending)? defaultSort,
+        string sortMemberName)
     {
         _sortAccessor = sortAccessor;
         _aliases = new(
             new Dictionary<string, SortAlias<TEntity>>(aliases));
         _default = defaultSort;
+        _sortMemberName = sortMemberName;
     }
 
     public (SortApplication<TEntity>? Sort, QueryContractError? Error) Evaluate(TInput input)
@@ -89,7 +92,7 @@ internal sealed class SortRule<TEntity, TInput>
             return (null, new(
                 QueryContractErrorCode.UnknownSort,
                 $"Unknown sort alias '{alias}'.",
-                "Sort",
+                _sortMemberName,
                 sortInput));
         }
 
