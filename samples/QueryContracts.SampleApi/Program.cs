@@ -62,7 +62,7 @@ var products = new List<Product>
     },
 };
 
-app.MapGet("/products", (ProductQuery query) =>
+app.MapGet("/products", ([AsParameters] ProductQuery query) =>
 {
     var result = products.AsQueryable().Apply(
         ProductContract.Instance,
