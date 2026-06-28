@@ -27,7 +27,7 @@ internal sealed class PageRule<TInput>
 
         if (page <= 0)
         {
-            errors.Add(new QueryContractError(
+            errors.Add(new(
                 QueryContractErrorCode.InvalidPage,
                 "Page must be greater than 0.",
                 "Page",
@@ -36,7 +36,7 @@ internal sealed class PageRule<TInput>
 
         if (pageSize <= 0)
         {
-            errors.Add(new QueryContractError(
+            errors.Add(new(
                 QueryContractErrorCode.InvalidPageSize,
                 "Page size must be greater than 0.",
                 "PageSize",
@@ -44,7 +44,7 @@ internal sealed class PageRule<TInput>
         }
         else if (pageSize > _maxSize)
         {
-            errors.Add(new QueryContractError(
+            errors.Add(new(
                 QueryContractErrorCode.PageSizeTooLarge,
                 $"Page size must not exceed {_maxSize}.",
                 "PageSize",

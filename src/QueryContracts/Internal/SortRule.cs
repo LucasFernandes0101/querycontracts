@@ -86,7 +86,7 @@ internal sealed class SortRule<TEntity, TInput>
 
         if (!_aliases.TryGetValue(alias, out SortAlias<TEntity>? sortAlias))
         {
-            return (null, new QueryContractError(
+            return (null, new(
                 QueryContractErrorCode.UnknownSort,
                 $"Unknown sort alias '{alias}'.",
                 "Sort",
