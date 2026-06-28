@@ -1,0 +1,6 @@
+@QueryContracts.SampleApi_HostAddress = http://localhost:5241
+
+GET {{QueryContracts.SampleApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
