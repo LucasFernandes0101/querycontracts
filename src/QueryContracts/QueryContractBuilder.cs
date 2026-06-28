@@ -38,8 +38,8 @@ public sealed class QueryContractBuilder<TEntity, TInput>
     /// <returns>A <see cref="SortBuilder{TEntity, TInput}"/> for declaring sort aliases.</returns>
     public SortBuilder<TEntity, TInput> Sort(Expression<Func<TInput, string?>> sortSelector)
     {
-        var sortMemberName = ExpressionHelpers.GetMemberName(sortSelector);
-        return new SortBuilder<TEntity, TInput>(
+        string sortMemberName = ExpressionHelpers.GetMemberName(sortSelector);
+        return new(
             this,
             sortSelector,
             sortMemberName);
@@ -57,8 +57,8 @@ public sealed class QueryContractBuilder<TEntity, TInput>
         Expression<Func<TInput, int?>> pageSizeSelector,
         int maxSize)
     {
-        var pageMemberName = ExpressionHelpers.GetMemberName(pageSelector);
-        var pageSizeMemberName = ExpressionHelpers.GetMemberName(pageSizeSelector);
+        string pageMemberName = ExpressionHelpers.GetMemberName(pageSelector);
+        string pageSizeMemberName = ExpressionHelpers.GetMemberName(pageSizeSelector);
 
         _page = new PageRule<TInput>(
             pageSelector.Compile(),
@@ -128,7 +128,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// </exception>
     public QueryContractBuilder<TEntity, TInput> Contains()
     {
-        EnsureStringEntityProperty(nameof(Contains));
+        FilterBuilder<TEntity, TInput, TInputProperty, TEntityProperty>.EnsureStringEntityProperty(nameof(Contains));
 
         var compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
@@ -149,7 +149,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// </exception>
     public QueryContractBuilder<TEntity, TInput> StartsWith()
     {
-        EnsureStringEntityProperty(nameof(StartsWith));
+        FilterBuilder<TEntity, TInput, TInputProperty, TEntityProperty>.EnsureStringEntityProperty(nameof(StartsWith));
 
         var compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
@@ -159,7 +159,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
         return _builder;
     }
 
-    private void EnsureStringEntityProperty(string methodName)
+    private static void EnsureStringEntityProperty(string methodName)
     {
         if (typeof(TEntityProperty) != typeof(string))
         {
@@ -246,7 +246,7 @@ public sealed class SortBuilder<TEntity, TInput>
     {
         _default = (alias, descending);
 
-        _builder.SetSort(new SortRule<TEntity, TInput>(
+        _builder.SetSort(new(
             _sortAccessor,
             _aliases,
             _default,
@@ -267,7 +267,7 @@ public sealed class SortBuilder<TEntity, TInput>
         Expression<Func<TInput, int?>> pageSizeSelector,
         int maxSize)
     {
-        _builder.SetSort(new SortRule<TEntity, TInput>(
+        _builder.SetSort(new(
             _sortAccessor,
             _aliases,
             _default,
@@ -282,7 +282,7 @@ public sealed class SortBuilder<TEntity, TInput>
     /// <returns>A new, immutable contract instance.</returns>
     public QueryContract<TEntity, TInput> Build()
     {
-        _builder.SetSort(new SortRule<TEntity, TInput>(
+        _builder.SetSort(new(
             _sortAccessor,
             _aliases,
             _default,
