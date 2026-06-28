@@ -38,7 +38,7 @@ public static readonly QueryContract<User, UserQuery> Contract =
 > This package is an early preview.
 
 ```bash
-dotnet add package QueryContracts --version 0.1.0-preview.1
+dotnet add package QueryContracts --version 0.1.0-preview.3
 ```
 
 ## Quickstart
@@ -49,7 +49,7 @@ Define your entity and input:
 public sealed class User
 {
     public Guid Id { get; init; }
-    public string Name { get; init; } = "";
+    public string Name { get; init; } = string.Empty;
     public bool IsActive { get; init; }
     public DateTime CreatedAt { get; init; }
 }
