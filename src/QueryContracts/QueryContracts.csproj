@@ -17,9 +17,9 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <Deterministic>true</Deterministic>
-    <Version>0.1.0-preview.3</Version>
+    <Version>0.1.0-preview.4</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageIcon>icon.png</PackageIcon>
+    <PackageIcon>icon-128.png</PackageIcon>
     <PackageTags>query;contract;filter;sort;pagination;iqueryable;linq</PackageTags>
     <Copyright>Copyright (c) Lucas Fernandes</Copyright>
     <PackageReleaseNotes>Added package icon, tags, copyright, and symbol package support.</PackageReleaseNotes>
@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-    <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="icon-128.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

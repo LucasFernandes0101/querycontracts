@@ -38,7 +38,7 @@ public static readonly QueryContract<User, UserQuery> Contract =
 > This package is an early preview.
 
 ```bash
-dotnet add package QueryContracts --version 0.1.0-preview.3
+dotnet add package QueryContracts --version 0.1.0-preview.4
 ```
 
 ## Quickstart
