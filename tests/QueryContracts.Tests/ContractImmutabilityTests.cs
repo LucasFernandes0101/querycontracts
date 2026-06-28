@@ -9,14 +9,14 @@ public class ContractImmutabilityTests
             Id = Guid.NewGuid(),
             Name = "Alice",
             IsActive = true,
-            CreatedAt = new DateTime(2026, 1, 1)
+            CreatedAt = new(2026, 1, 1)
         },
         new()
         {
             Id = Guid.NewGuid(),
             Name = "Bob",
             IsActive = false,
-            CreatedAt = new DateTime(2026, 2, 1)
+            CreatedAt = new(2026, 2, 1)
         },
     ];
 

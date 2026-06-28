@@ -9,28 +9,28 @@ public class FilteringTests
             Id = Guid.NewGuid(),
             Name = "Alice",
             IsActive = true,
-            CreatedAt = new DateTime(2026, 1, 1)
+            CreatedAt = new(2026, 1, 1)
         },
         new()
         {
             Id = Guid.NewGuid(),
             Name = "Bob",
             IsActive = false,
-            CreatedAt = new DateTime(2026, 2, 1)
+            CreatedAt = new(2026, 2, 1)
         },
         new()
         {
             Id = Guid.NewGuid(),
             Name = "Charlie",
             IsActive = true,
-            CreatedAt = new DateTime(2026, 3, 1)
+            CreatedAt = new(2026, 3, 1)
         },
         new()
         {
             Id = Guid.NewGuid(),
             Name = "Alice Cooper",
             IsActive = true,
-            CreatedAt = new DateTime(2026, 4, 1)
+            CreatedAt = new(2026, 4, 1)
         },
     ];
 
@@ -43,7 +43,7 @@ public class FilteringTests
             Category = "Hardware",
             Price = 120m,
             IsAvailable = true,
-            CreatedAt = new DateTime(2026, 1, 10)
+            CreatedAt = new(2026, 1, 10)
         },
         new()
         {
@@ -52,7 +52,7 @@ public class FilteringTests
             Category = "Hardware",
             Price = 45m,
             IsAvailable = false,
-            CreatedAt = new DateTime(2026, 2, 15)
+            CreatedAt = new(2026, 2, 15)
         },
         new()
         {
@@ -61,7 +61,7 @@ public class FilteringTests
             Category = "Accessories",
             Price = 12m,
             IsAvailable = true,
-            CreatedAt = new DateTime(2026, 3, 20)
+            CreatedAt = new(2026, 3, 20)
         },
         new()
         {
@@ -70,7 +70,7 @@ public class FilteringTests
             Category = "Accessories",
             Price = 85m,
             IsAvailable = true,
-            CreatedAt = new DateTime(2026, 4, 5)
+            CreatedAt = new(2026, 4, 5)
         },
     ];
 

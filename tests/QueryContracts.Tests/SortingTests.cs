@@ -9,21 +9,21 @@ public class SortingTests
             Id = Guid.NewGuid(),
             Name = "Charlie",
             IsActive = true,
-            CreatedAt = new DateTime(2026, 3, 1)
+            CreatedAt = new(2026, 3, 1)
         },
         new()
         {
             Id = Guid.NewGuid(),
             Name = "Alice",
             IsActive = true,
-            CreatedAt = new DateTime(2026, 1, 1)
+            CreatedAt = new(2026, 1, 1)
         },
         new()
         {
             Id = Guid.NewGuid(),
             Name = "Bob",
             IsActive = false,
-            CreatedAt = new DateTime(2026, 2, 1)
+            CreatedAt = new(2026, 2, 1)
         },
     ];
 
@@ -87,9 +87,9 @@ public class SortingTests
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
-        Assert.Equal(new DateTime(2026, 3, 1), items[0].CreatedAt);
-        Assert.Equal(new DateTime(2026, 2, 1), items[1].CreatedAt);
-        Assert.Equal(new DateTime(2026, 1, 1), items[2].CreatedAt);
+        Assert.Equal(new(2026, 3, 1), items[0].CreatedAt);
+        Assert.Equal(new(2026, 2, 1), items[1].CreatedAt);
+        Assert.Equal(new(2026, 1, 1), items[2].CreatedAt);
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class SortingTests
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
-        Assert.Equal(new DateTime(2026, 3, 1), items[0].CreatedAt);
+        Assert.Equal(new(2026, 3, 1), items[0].CreatedAt);
     }
 
     [Fact]

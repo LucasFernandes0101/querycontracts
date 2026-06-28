@@ -13,7 +13,7 @@ var products = new List<Product>
         Category = "Hardware",
         Price = 120m,
         IsAvailable = true,
-        CreatedAt = new DateTime(2026, 1, 15)
+        CreatedAt = new(2026, 1, 15)
     },
     new()
     {
@@ -22,7 +22,7 @@ var products = new List<Product>
         Category = "Hardware",
         Price = 45m,
         IsAvailable = true,
-        CreatedAt = new DateTime(2026, 2, 10)
+        CreatedAt = new(2026, 2, 10)
     },
     new()
     {
@@ -31,7 +31,7 @@ var products = new List<Product>
         Category = "Accessories",
         Price = 12m,
         IsAvailable = false,
-        CreatedAt = new DateTime(2026, 3, 5)
+        CreatedAt = new(2026, 3, 5)
     },
     new()
     {
@@ -40,7 +40,7 @@ var products = new List<Product>
         Category = "Accessories",
         Price = 85m,
         IsAvailable = true,
-        CreatedAt = new DateTime(2026, 4, 20)
+        CreatedAt = new(2026, 4, 20)
     },
     new()
     {
@@ -49,7 +49,7 @@ var products = new List<Product>
         Category = "Accessories",
         Price = 30m,
         IsAvailable = true,
-        CreatedAt = new DateTime(2026, 5, 12)
+        CreatedAt = new(2026, 5, 12)
     },
     new()
     {
@@ -58,7 +58,7 @@ var products = new List<Product>
         Category = "Hardware",
         Price = 65m,
         IsAvailable = false,
-        CreatedAt = new DateTime(2026, 6, 8)
+        CreatedAt = new(2026, 6, 8)
     },
 };
 

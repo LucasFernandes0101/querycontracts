@@ -8,7 +8,7 @@ public class PaginationTests
             Id = Guid.NewGuid(),
             Name = $"User{i}",
             IsActive = true,
-            CreatedAt = new DateTime(2026, 1, i),
+            CreatedAt = new(2026, 1, i),
         })];
 
     private static readonly QueryContract<User, UserQuery> _contract =
