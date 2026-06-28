@@ -1,16 +1,26 @@
-using QueryContracts;
-
 namespace QueryContracts.Tests;
 
 public class ResultTests
 {
-    private static readonly User[] Users =
+    private static readonly User[] _users =
     [
-        new() { Id = Guid.NewGuid(), Name = "Alice", IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
-        new() { Id = Guid.NewGuid(), Name = "Bob", IsActive = false, CreatedAt = new DateTime(2026, 2, 1) },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Alice",
+            IsActive = true,
+            CreatedAt = new DateTime(2026, 1, 1)
+        },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Bob",
+            IsActive = false,
+            CreatedAt = new DateTime(2026, 2, 1)
+        },
     ];
 
-    private static readonly QueryContract<User, UserQuery> Contract =
+    private static readonly QueryContract<User, UserQuery> _contract =
         QueryContract.For<User, UserQuery>()
             .Filter(q => q.Name, u => u.Name).Contains()
             .Sort(q => q.Sort)
@@ -22,7 +32,14 @@ public class ResultTests
     [Fact]
     public void Valid_Result_Has_IsValid_True()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery("Ali", null, "name", 1, 10));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                "Ali",
+                null,
+                "name",
+                1,
+                10));
 
         Assert.True(result.IsValid);
     }
@@ -30,7 +47,14 @@ public class ResultTests
     [Fact]
     public void Valid_Result_Has_No_Errors()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery("Ali", null, "name", 1, 10));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                "Ali",
+                null,
+                "name",
+                1,
+                10));
 
         Assert.Empty(result.Errors);
     }
@@ -38,7 +62,14 @@ public class ResultTests
     [Fact]
     public void Invalid_Result_Has_IsValid_False()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, "bad", 1, 10));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                "bad",
+                1,
+                10));
 
         Assert.False(result.IsValid);
     }
@@ -46,7 +77,14 @@ public class ResultTests
     [Fact]
     public void Invalid_Result_Has_Structured_Errors()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, "bad", 1, 10));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                "bad",
+                1,
+                10));
 
         Assert.False(result.IsValid);
         Assert.NotEmpty(result.Errors);
@@ -56,8 +94,15 @@ public class ResultTests
     [Fact]
     public void Result_Query_Remains_IQueryable()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, null, null, null));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                null,
+                null,
+                null));
 
-        Assert.IsAssignableFrom<IQueryable<User>>(result.Query);
+        Assert.IsType<IQueryable<User>>(result.Query, exactMatch: false);
     }
 }

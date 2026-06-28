@@ -1,3 +1,6 @@
+using System.Linq.Expressions;
+using QueryContracts.Internal;
+
 namespace QueryContracts;
 
 /// <summary>
@@ -29,21 +32,25 @@ public static class QueryContractQueryableExtensions
         ArgumentNullException.ThrowIfNull(input);
 
         var errors = new List<QueryContractError>();
-        var query = source;
+        IQueryable<TEntity> query = source;
+        bool hasSortError = false;
 
-        foreach (var filter in contract.Filters)
+        foreach (FilterRule<TEntity, TInput> filter in contract.Filters)
         {
-            var predicate = filter.GetPredicate(input);
+            Expression<Func<TEntity, bool>>? predicate = filter.GetPredicate(input);
             if (predicate is not null)
+            {
                 query = query.Where(predicate);
+            }
         }
 
         if (contract.Sort is not null)
         {
-            var (sort, error) = contract.Sort.Evaluate(input);
+            (SortApplication<TEntity>? sort, QueryContractError? error) = contract.Sort.Evaluate(input);
             if (error is not null)
             {
                 errors.Add(error);
+                hasSortError = true;
             }
             else if (sort is not null)
             {
@@ -51,19 +58,19 @@ public static class QueryContractQueryableExtensions
             }
         }
 
-        if (contract.Page is not null && errors.Count == 0)
+        if (contract.Page is not null)
         {
-            var (page, pageSize, error) = contract.Page.Evaluate(input);
-            if (error is not null)
+            (int page, int pageSize, IReadOnlyList<QueryContractError> pageErrors) = contract.Page.Evaluate(input);
+            if (pageErrors.Count > 0)
             {
-                errors.Add(error);
+                errors.AddRange(pageErrors);
             }
-            else
+            else if (!hasSortError)
             {
                 query = query.Skip((page - 1) * pageSize).Take(pageSize);
             }
         }
 
-        return new QueryContractResult<TEntity>(query, errors.AsReadOnly());
+        return new(query, [.. errors]);
     }
 }

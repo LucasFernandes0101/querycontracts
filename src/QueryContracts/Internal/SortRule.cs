@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
 namespace QueryContracts.Internal;
@@ -34,9 +35,7 @@ internal sealed class SortApplication<TEntity>
     }
 
     public IQueryable<TEntity> Apply(IQueryable<TEntity> source)
-    {
-        return ExpressionHelpers.ApplyOrderBy(source, _alias.Selector, _alias.PropertyType, _descending);
-    }
+        => ExpressionHelpers.ApplyOrderBy(source, _alias.Selector, _alias.PropertyType, _descending);
 }
 
 /// <summary>
@@ -45,16 +44,17 @@ internal sealed class SortApplication<TEntity>
 internal sealed class SortRule<TEntity, TInput>
 {
     private readonly Func<TInput, string?> _sortAccessor;
-    private readonly IReadOnlyDictionary<string, SortAlias<TEntity>> _aliases;
+    private readonly ReadOnlyDictionary<string, SortAlias<TEntity>> _aliases;
     private readonly (string Alias, bool Descending)? _default;
 
     internal SortRule(
         Func<TInput, string?> sortAccessor,
-        IReadOnlyDictionary<string, SortAlias<TEntity>> aliases,
+        IDictionary<string, SortAlias<TEntity>> aliases,
         (string Alias, bool Descending)? defaultSort)
     {
         _sortAccessor = sortAccessor;
-        _aliases = aliases;
+        _aliases = new(
+            new Dictionary<string, SortAlias<TEntity>>(aliases));
         _default = defaultSort;
     }
 
@@ -84,7 +84,7 @@ internal sealed class SortRule<TEntity, TInput>
             alias = descending ? trimmed[1..] : trimmed;
         }
 
-        if (!_aliases.TryGetValue(alias, out var sortAlias))
+        if (!_aliases.TryGetValue(alias, out SortAlias<TEntity>? sortAlias))
         {
             return (null, new QueryContractError(
                 QueryContractErrorCode.UnknownSort,
@@ -93,6 +93,6 @@ internal sealed class SortRule<TEntity, TInput>
                 sortInput));
         }
 
-        return (new SortApplication<TEntity>(sortAlias, descending), null);
+        return (new(sortAlias, descending), null);
     }
 }

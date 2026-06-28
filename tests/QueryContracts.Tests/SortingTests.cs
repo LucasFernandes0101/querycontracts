@@ -1,17 +1,33 @@
-using QueryContracts;
-
 namespace QueryContracts.Tests;
 
 public class SortingTests
 {
-    private static readonly User[] Users =
+    private static readonly User[] _users =
     [
-        new() { Id = Guid.NewGuid(), Name = "Charlie", IsActive = true, CreatedAt = new DateTime(2026, 3, 1) },
-        new() { Id = Guid.NewGuid(), Name = "Alice", IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
-        new() { Id = Guid.NewGuid(), Name = "Bob", IsActive = false, CreatedAt = new DateTime(2026, 2, 1) },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Charlie",
+            IsActive = true,
+            CreatedAt = new DateTime(2026, 3, 1)
+        },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Alice",
+            IsActive = true,
+            CreatedAt = new DateTime(2026, 1, 1)
+        },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Bob",
+            IsActive = false,
+            CreatedAt = new DateTime(2026, 2, 1)
+        },
     ];
 
-    private static readonly QueryContract<User, UserQuery> Contract =
+    private static readonly QueryContract<User, UserQuery> _contract =
         QueryContract.For<User, UserQuery>()
             .Sort(q => q.Sort)
                 .Allow("name", u => u.Name)
@@ -22,7 +38,14 @@ public class SortingTests
     [Fact]
     public void Sort_Ascending_By_Alias()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, "name", null, null));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                "name",
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
@@ -34,7 +57,14 @@ public class SortingTests
     [Fact]
     public void Sort_Descending_With_Dash_Prefix()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, "-name", null, null));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                "-name",
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
@@ -46,7 +76,14 @@ public class SortingTests
     [Fact]
     public void Default_Sort_Is_Applied_When_Sort_Is_Null()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, null, null, null));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
@@ -58,7 +95,14 @@ public class SortingTests
     [Fact]
     public void Default_Sort_Is_Applied_When_Sort_Is_Empty()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, "", null, null));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                "",
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
@@ -68,7 +112,14 @@ public class SortingTests
     [Fact]
     public void Unknown_Sort_Alias_Returns_IsValid_False()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, "unknownfield", null, null));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                "unknownfield",
+                null,
+                null));
 
         Assert.False(result.IsValid);
     }
@@ -76,7 +127,14 @@ public class SortingTests
     [Fact]
     public void Unknown_Sort_Alias_Returns_Structured_Error()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, "unknownfield", null, null));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                "unknownfield",
+                null,
+                null));
 
         Assert.False(result.IsValid);
         var error = Assert.Single(result.Errors);
@@ -88,7 +146,14 @@ public class SortingTests
     [Fact]
     public void Unknown_Sort_Alias_Does_Not_Silently_Fall_Back_To_Default_Sort()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, "unknownfield", null, null));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                "unknownfield",
+                null,
+                null));
 
         Assert.False(result.IsValid);
         var error = Assert.Single(result.Errors);
@@ -98,7 +163,14 @@ public class SortingTests
     [Fact]
     public void Unknown_Sort_Alias_Does_Not_Execute_Query()
     {
-        var result = Users.AsQueryable().Apply(Contract, new UserQuery(null, null, "unknownfield", 1, 10));
+        var result = _users.AsQueryable().Apply(
+            _contract,
+            new UserQuery(
+                null,
+                null,
+                "unknownfield",
+                1,
+                10));
 
         Assert.False(result.IsValid);
         var error = Assert.Single(result.Errors);

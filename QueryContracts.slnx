@@ -1,11 +1,5 @@
 <Solution>
-  <Folder Name="/samples/">
-    <Project Path="samples/QueryContracts.SampleApi/QueryContracts.SampleApi.csproj" />
-  </Folder>
-  <Folder Name="/src/">
-    <Project Path="src/QueryContracts/QueryContracts.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/QueryContracts.Tests/QueryContracts.Tests.csproj" />
-  </Folder>
+  <Project Path="src\QueryContracts\QueryContracts.csproj" />
+  <Project Path="tests\QueryContracts.Tests\QueryContracts.Tests.csproj" />
+  <Project Path="samples\QueryContracts.SampleApi\QueryContracts.SampleApi.csproj" />
 </Solution>

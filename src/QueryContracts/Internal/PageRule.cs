@@ -19,14 +19,15 @@ internal sealed class PageRule<TInput>
         _maxSize = maxSize;
     }
 
-    public (int Page, int PageSize, QueryContractError? Error) Evaluate(TInput input)
+    public (int Page, int PageSize, IReadOnlyList<QueryContractError> Errors) Evaluate(TInput input)
     {
         int page = _pageAccessor(input) ?? 1;
         int pageSize = _pageSizeAccessor(input) ?? 20;
+        var errors = new List<QueryContractError>();
 
         if (page <= 0)
         {
-            return (page, pageSize, new QueryContractError(
+            errors.Add(new QueryContractError(
                 QueryContractErrorCode.InvalidPage,
                 "Page must be greater than 0.",
                 "Page",
@@ -35,22 +36,21 @@ internal sealed class PageRule<TInput>
 
         if (pageSize <= 0)
         {
-            return (page, pageSize, new QueryContractError(
+            errors.Add(new QueryContractError(
                 QueryContractErrorCode.InvalidPageSize,
                 "Page size must be greater than 0.",
                 "PageSize",
                 pageSize));
         }
-
-        if (pageSize > _maxSize)
+        else if (pageSize > _maxSize)
         {
-            return (page, pageSize, new QueryContractError(
+            errors.Add(new QueryContractError(
                 QueryContractErrorCode.PageSizeTooLarge,
                 $"Page size must not exceed {_maxSize}.",
                 "PageSize",
                 pageSize));
         }
 
-        return (page, pageSize, null);
+        return (page, pageSize, [.. errors]);
     }
 }

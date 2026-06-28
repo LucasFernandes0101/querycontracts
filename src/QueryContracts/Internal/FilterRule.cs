@@ -52,16 +52,21 @@ internal sealed class FilterRule<TEntity, TInput, TEntityProperty> : FilterRule<
         object? inputValue = _inputAccessor(input);
 
         if (inputValue is null)
+        {
             return null;
+        }
 
         if (_kind is FilterKind.Contains or FilterKind.StartsWith)
         {
             if (inputValue is not string s || string.IsNullOrWhiteSpace(s))
+            {
                 return null;
+            }
+
             inputValue = s;
         }
 
-        var constant = Expression.Constant(inputValue, typeof(TEntityProperty));
+        ConstantExpression constant = Expression.Constant(inputValue, typeof(TEntityProperty));
         Expression body = _kind switch
         {
             FilterKind.Equals =>

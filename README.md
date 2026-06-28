@@ -37,7 +37,7 @@ public static readonly QueryContract<User, UserQuery> Contract =
 
 > This package is an early preview.
 
-```
+```bash
 dotnet add package QueryContracts --version 0.1.0-preview.1
 ```
 
@@ -107,12 +107,12 @@ The library does not guess mappings by convention. Explicit mapping prevents acc
 
 Sort aliases are explicit strings declared in the contract:
 
-| Sort string | Behavior |
-|---|---|
-| `"name"` | Ascending by name |
-| `"-name"` | Descending by name |
-| `"created"` | Ascending by created |
-| `"-created"` | Descending by created |
+| Sort string   | Behavior              |
+|---------------|-----------------------|
+| `"name"`      | Ascending by name     |
+| `"-name"`     | Descending by name    |
+| `"created"`   | Ascending by created  |
+| `"-created"`  | Descending by created |
 
 When the sort input is `null`, empty, or whitespace, the default sort is applied (if configured).
 

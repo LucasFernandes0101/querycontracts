@@ -1,6 +1,11 @@
 @QueryContracts.SampleApi_HostAddress = http://localhost:5241
 
-GET {{QueryContracts.SampleApi_HostAddress}}/weatherforecast/
+GET {{QueryContracts.SampleApi_HostAddress}}/products?search=Mouse&sort=name&page=1&pageSize=10
+Accept: application/json
+
+###
+
+GET {{QueryContracts.SampleApi_HostAddress}}/products?sort=unknown&page=0&pageSize=999
 Accept: application/json
 
 ###

@@ -29,10 +29,7 @@ public sealed class QueryContractBuilder<TEntity, TInput>
     public FilterBuilder<TEntity, TInput, TInputProperty, TEntityProperty> Filter<TInputProperty, TEntityProperty>(
         Expression<Func<TInput, TInputProperty>> inputSelector,
         Expression<Func<TEntity, TEntityProperty>> entitySelector)
-    {
-        return new FilterBuilder<TEntity, TInput, TInputProperty, TEntityProperty>(
-            this, inputSelector, entitySelector);
-    }
+        => new(this, inputSelector, entitySelector);
 
     /// <summary>
     /// Begins configuring sorting rules for the contract.
@@ -40,9 +37,7 @@ public sealed class QueryContractBuilder<TEntity, TInput>
     /// <param name="sortSelector">An expression that reads the sort string from the input.</param>
     /// <returns>A <see cref="SortBuilder{TEntity, TInput}"/> for declaring sort aliases.</returns>
     public SortBuilder<TEntity, TInput> Sort(Expression<Func<TInput, string?>> sortSelector)
-    {
-        return new SortBuilder<TEntity, TInput>(this, sortSelector);
-    }
+        => new(this, sortSelector);
 
     /// <summary>
     /// Configures pagination rules for the contract.
@@ -56,10 +51,11 @@ public sealed class QueryContractBuilder<TEntity, TInput>
         Expression<Func<TInput, int?>> pageSizeSelector,
         int maxSize)
     {
-        _page = new PageRule<TInput>(
+        _page = new(
             pageSelector.Compile(),
             pageSizeSelector.Compile(),
             maxSize);
+
         return this;
     }
 
@@ -68,9 +64,7 @@ public sealed class QueryContractBuilder<TEntity, TInput>
     /// </summary>
     /// <returns>A new, immutable contract instance.</returns>
     public QueryContract<TEntity, TInput> Build()
-    {
-        return new QueryContract<TEntity, TInput>(_filters.AsReadOnly(), _sort, _page);
-    }
+        => new([.. _filters], _sort, _page);
 
     internal void AddFilter(FilterRule<TEntity, TInput> filter) => _filters.Add(filter);
 
@@ -104,7 +98,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> Equals()
     {
-        var compiled = _inputSelector.Compile();
+        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
@@ -120,7 +114,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> Contains()
     {
-        var compiled = _inputSelector.Compile();
+        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
@@ -136,7 +130,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> StartsWith()
     {
-        var compiled = _inputSelector.Compile();
+        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
@@ -151,7 +145,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> GreaterThanOrEqual()
     {
-        var compiled = _inputSelector.Compile();
+        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
@@ -166,7 +160,7 @@ public sealed class FilterBuilder<TEntity, TInput, TInputProperty, TEntityProper
     /// <returns>The parent builder for chaining.</returns>
     public QueryContractBuilder<TEntity, TInput> LessThanOrEqual()
     {
-        var compiled = _inputSelector.Compile();
+        Func<TInput, TInputProperty> compiled = _inputSelector.Compile();
         _builder.AddFilter(new FilterRule<TEntity, TInput, TEntityProperty>(
             input => compiled(input),
             _entitySelector,
@@ -205,7 +199,7 @@ public sealed class SortBuilder<TEntity, TInput>
         string alias,
         Expression<Func<TEntity, TProperty>> selector)
     {
-        _aliases[alias] = new SortAlias<TEntity>(alias, selector, typeof(TProperty));
+        _aliases[alias] = new(alias, selector, typeof(TProperty));
         return this;
     }
 
@@ -218,7 +212,7 @@ public sealed class SortBuilder<TEntity, TInput>
     public QueryContractBuilder<TEntity, TInput> Default(string alias, bool descending = false)
     {
         _default = (alias, descending);
-        _builder.SetSort(new SortRule<TEntity, TInput>(_sortAccessor, _aliases, _default));
+        _builder.SetSort(new(_sortAccessor, _aliases, _default));
         return _builder;
     }
 
@@ -234,7 +228,7 @@ public sealed class SortBuilder<TEntity, TInput>
         Expression<Func<TInput, int?>> pageSizeSelector,
         int maxSize)
     {
-        _builder.SetSort(new SortRule<TEntity, TInput>(_sortAccessor, _aliases, _default));
+        _builder.SetSort(new(_sortAccessor, _aliases, _default));
         return _builder.Page(pageSelector, pageSizeSelector, maxSize);
     }
 
@@ -244,7 +238,7 @@ public sealed class SortBuilder<TEntity, TInput>
     /// <returns>A new, immutable contract instance.</returns>
     public QueryContract<TEntity, TInput> Build()
     {
-        _builder.SetSort(new SortRule<TEntity, TInput>(_sortAccessor, _aliases, _default));
+        _builder.SetSort(new(_sortAccessor, _aliases, _default));
         return _builder.Build();
     }
 }

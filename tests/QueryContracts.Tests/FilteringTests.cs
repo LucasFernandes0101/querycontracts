@@ -1,23 +1,77 @@
-using QueryContracts;
-
 namespace QueryContracts.Tests;
 
 public class FilteringTests
 {
-    private static readonly User[] Users =
+    private static readonly User[] _users =
     [
-        new() { Id = Guid.NewGuid(), Name = "Alice", IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
-        new() { Id = Guid.NewGuid(), Name = "Bob", IsActive = false, CreatedAt = new DateTime(2026, 2, 1) },
-        new() { Id = Guid.NewGuid(), Name = "Charlie", IsActive = true, CreatedAt = new DateTime(2026, 3, 1) },
-        new() { Id = Guid.NewGuid(), Name = "Alice Cooper", IsActive = true, CreatedAt = new DateTime(2026, 4, 1) },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Alice",
+            IsActive = true,
+            CreatedAt = new DateTime(2026, 1, 1)
+        },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Bob",
+            IsActive = false,
+            CreatedAt = new DateTime(2026, 2, 1)
+        },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Charlie",
+            IsActive = true,
+            CreatedAt = new DateTime(2026, 3, 1)
+        },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Alice Cooper",
+            IsActive = true,
+            CreatedAt = new DateTime(2026, 4, 1)
+        },
     ];
 
-    private static readonly Product[] Products =
+    private static readonly Product[] _products =
     [
-        new() { Id = Guid.NewGuid(), Name = "Mechanical Keyboard", Category = "Hardware", Price = 120m, IsAvailable = true, CreatedAt = new DateTime(2026, 1, 10) },
-        new() { Id = Guid.NewGuid(), Name = "Wireless Mouse", Category = "Hardware", Price = 45m, IsAvailable = false, CreatedAt = new DateTime(2026, 2, 15) },
-        new() { Id = Guid.NewGuid(), Name = "USB Cable", Category = "Accessories", Price = 12m, IsAvailable = true, CreatedAt = new DateTime(2026, 3, 20) },
-        new() { Id = Guid.NewGuid(), Name = "Monitor Stand", Category = "Accessories", Price = 85m, IsAvailable = true, CreatedAt = new DateTime(2026, 4, 5) },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Mechanical Keyboard",
+            Category = "Hardware",
+            Price = 120m,
+            IsAvailable = true,
+            CreatedAt = new DateTime(2026, 1, 10)
+        },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Wireless Mouse",
+            Category = "Hardware",
+            Price = 45m,
+            IsAvailable = false,
+            CreatedAt = new DateTime(2026, 2, 15)
+        },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "USB Cable",
+            Category = "Accessories",
+            Price = 12m,
+            IsAvailable = true,
+            CreatedAt = new DateTime(2026, 3, 20)
+        },
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Monitor Stand",
+            Category = "Accessories",
+            Price = 85m,
+            IsAvailable = true,
+            CreatedAt = new DateTime(2026, 4, 5)
+        },
     ];
 
     [Fact]
@@ -27,7 +81,14 @@ public class FilteringTests
             .Filter(q => q.Active, u => u.IsActive).Equals()
             .Build();
 
-        var result = Users.AsQueryable().Apply(contract, new UserQuery(null, true, null, null, null));
+        var result = _users.AsQueryable().Apply(
+            contract,
+            new UserQuery(
+                null,
+                true,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
@@ -42,7 +103,14 @@ public class FilteringTests
             .Filter(q => q.Active, u => u.IsActive).Equals()
             .Build();
 
-        var result = Users.AsQueryable().Apply(contract, new UserQuery(null, null, null, null, null));
+        var result = _users.AsQueryable().Apply(
+            contract,
+            new UserQuery(
+                null,
+                null,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         Assert.Equal(4, result.Query.ToList().Count);
@@ -55,7 +123,14 @@ public class FilteringTests
             .Filter(q => q.Name, u => u.Name).Contains()
             .Build();
 
-        var result = Users.AsQueryable().Apply(contract, new UserQuery("Alice", null, null, null, null));
+        var result = _users.AsQueryable().Apply(
+            contract,
+            new UserQuery(
+                "Alice",
+                null,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
@@ -71,7 +146,14 @@ public class FilteringTests
             .Filter(q => q.Name, u => u.Name).Contains()
             .Build();
 
-        var result = Users.AsQueryable().Apply(contract, new UserQuery(null, null, null, null, null));
+        var result = _users.AsQueryable().Apply(
+            contract,
+            new UserQuery(
+                null,
+                null,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         Assert.Equal(4, result.Query.ToList().Count);
@@ -84,7 +166,14 @@ public class FilteringTests
             .Filter(q => q.Name, u => u.Name).Contains()
             .Build();
 
-        var result = Users.AsQueryable().Apply(contract, new UserQuery("", null, null, null, null));
+        var result = _users.AsQueryable().Apply(
+            contract,
+            new UserQuery(
+                "",
+                null,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         Assert.Equal(4, result.Query.ToList().Count);
@@ -97,7 +186,14 @@ public class FilteringTests
             .Filter(q => q.Name, u => u.Name).Contains()
             .Build();
 
-        var result = Users.AsQueryable().Apply(contract, new UserQuery("   ", null, null, null, null));
+        var result = _users.AsQueryable().Apply(
+            contract,
+            new UserQuery(
+                "   ",
+                null,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         Assert.Equal(4, result.Query.ToList().Count);
@@ -110,7 +206,14 @@ public class FilteringTests
             .Filter(q => q.Name, u => u.Name).StartsWith()
             .Build();
 
-        var result = Users.AsQueryable().Apply(contract, new UserQuery("Ali", null, null, null, null));
+        var result = _users.AsQueryable().Apply(
+            contract,
+            new UserQuery(
+                "Ali",
+                null,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
@@ -125,7 +228,17 @@ public class FilteringTests
             .Filter(q => q.MinPrice, p => p.Price).GreaterThanOrEqual()
             .Build();
 
-        var result = Products.AsQueryable().Apply(contract, new ProductQuery(null, null, 50m, null, null, null, null, null));
+        var result = _products.AsQueryable().Apply(
+            contract,
+            new ProductQuery(
+                null,
+                null,
+                50m,
+                null,
+                null,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
@@ -140,7 +253,17 @@ public class FilteringTests
             .Filter(q => q.MaxPrice, p => p.Price).LessThanOrEqual()
             .Build();
 
-        var result = Products.AsQueryable().Apply(contract, new ProductQuery(null, null, null, 50m, null, null, null, null));
+        var result = _products.AsQueryable().Apply(
+            contract,
+            new ProductQuery(
+                null,
+                null,
+                null,
+                50m,
+                null,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
@@ -159,8 +282,17 @@ public class FilteringTests
             .Filter(q => q.Available, p => p.IsAvailable).Equals()
             .Build();
 
-        var result = Products.AsQueryable().Apply(contract,
-            new ProductQuery("o", "Hardware", 40m, 200m, true, null, null, null));
+        var result = _products.AsQueryable().Apply(
+            contract,
+            new ProductQuery(
+                "o",
+                "Hardware",
+                40m,
+                200m,
+                true,
+                null,
+                null,
+                null));
 
         Assert.True(result.IsValid);
         var items = result.Query.ToList();
